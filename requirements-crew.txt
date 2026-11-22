@@ -1,0 +1,5 @@
+crewai
+a2a-sdk>=1.2
+fastapi
+uvicorn[standard]
+python-dotenv
