@@ -1,8 +1,14 @@
-# Guía Paso a Paso de Evaluación Local (Para el Equipo Docente)
+# Guía Paso a Paso de Evaluación Local y en Azure (Para el Equipo Docente)
 
 Esta guía rápida permite instalar, levantar todo el ecosistema multi-agente A2A en **una sola terminal** y comprobar los casos de evaluación en menos de 3 minutos.
 
-> **Dónde están las evidencias visuales:** Las 5 capturas de pantalla de nuestra ejecución local están en la carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y explicadas con sus tablas en la sección 8 del [`README.md`](README.md).
+> ☁️ **Prueba directa en Microsoft Azure:**
+> - **URL pública:** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)
+> - **Swagger FastAPI:** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)
+> - **Token de acceso (`TOKEN_ACCESO`):** `uai-2026`
+> - ⚠️ **Nota importante:** La aplicación en Azure se mantiene **apagada por temas de consumo**. Por favor **avisar a los integrantes del grupo para encender la API en Azure** al momento de revisarla.
+
+> 📸 **Dónde están las evidencias visuales:** Las 5 capturas de pantalla de nuestra ejecución están en la carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y explicadas con sus tablas en la sección 8 del [`README.md`](README.md).
 
 ---
 
@@ -35,9 +41,9 @@ pip install -r requirements.txt
    ```env
    GOOGLE_API_KEY=su_clave_gemini_aqui
    MODELO=gemini-2.5-flash
-   TOKEN_ACCESO=token-secreto-ejemplo-123
+   TOKEN_ACCESO=uai-2026
    ```
-   *(El `TOKEN_ACCESO` ya viene configurado con `token-secreto-ejemplo-123` para que pueda usarlo directamente en las pruebas).*
+   *(El `TOKEN_ACCESO` ya viene configurado con `uai-2026` para que pueda usarlo directamente en las pruebas).*
 
 ---
 
@@ -71,9 +77,9 @@ Puede probar desde el **Canal Web** (`http://127.0.0.1:8000`), desde **Swagger F
    - Deje vacío el campo *Token de acceso* (o escriba una clave incorrecta) y haga clic en **"Verificar acceso"**.
    - **Resultado:** Verá en rojo **`Acceso rechazado (401)`** y en la terminal el log `[ACCESO RECHAZADO]`.
 3. **Prueba 2 — Acceso Autorizado y Catálogo A2A:**
-   - Ingrese en el campo *Token de acceso* el valor de `.env`:
+   - Ingrese en el campo *Token de acceso* el valor configurado (`uai-2026`):
      ```text
-     token-secreto-ejemplo-123
+     uai-2026
      ```
    - Haga clic en **"Verificar acceso"**.
    - **Resultado:** Cambiará a verde **`Acceso autorizado (200)`** y se cargarán a la izquierda las tarjetas de los 3 agentes descubiertos por protocolo A2A.
@@ -101,8 +107,8 @@ Puede probar desde el **Canal Web** (`http://127.0.0.1:8000`), desde **Swagger F
 ### B. Prueba directa sobre el Servicio FastAPI (`/docs` o script automático)
 
 - **Desde Swagger UI (`http://127.0.0.1:8000/docs`):**
-  1. Haga clic en el botón verde **"Authorize"** (arriba a la derecha) e ingrese `token-secreto-ejemplo-123`.
-  2. Pruebe los endpoints protegidos **`GET /agentes`** y **`POST /api/consultar`**.
+  1. Haga clic en el botón verde **"Authorize"** (arriba a la derecha) e ingrese `uai-2026`.
+  2. Pruebe los endpoints protegidos **`GET /agentes`**, **`POST /api/consultar`** y **`POST /api/voz`**.
 - **Con el script automático de verificación (en otra terminal con `.venv` activado):**
   ```bash
   python scripts/probar_entrega.py

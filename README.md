@@ -1,8 +1,16 @@
 # Taller de Integración y Ejecución Local — Sistema Multi-Agente A2A
 
-Implementación local reproducible de un sistema multi-agente comunicado mediante el protocolo **A2A (`a2a-sdk`)**, expuesto a través de un **Servicio FastAPI con acceso protegido** y un **Canal Web de atención con frontend de chat propio**.
+Implementación local reproducible y desplegada en la nube de un sistema multi-agente comunicado mediante el protocolo **A2A (`a2a-sdk`)**, expuesto a través de un **Servicio FastAPI con acceso protegido**, un **Canal Web de atención con frontend de chat propio** y síntesis de **voz con ElevenLabs**.
 
-> 📌 **Guía rápida para el Equipo Docente:** Para instalar, levantar todo en **una sola terminal** y probar los casos de evaluación paso a paso, consulte **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** o siga la sección 5 de este documento. Las 5 capturas de evidencia local se encuentran en la carpeta **[`evidencias/`](evidencias/)**.
+> 📌 **Guía rápida para el Equipo Docente (Local):** Para instalar, levantar todo en **una sola terminal** y probar los casos de evaluación paso a paso, consulte **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** o siga la sección 5 de este documento. Las 5 capturas de evidencia se encuentran en la carpeta **[`evidencias/`](evidencias/)**.
+
+> ☁️ **Despliegue en Microsoft Azure (+1 punto adicional):**
+> - **URL pública de la aplicación (Canal Web y FastAPI):**  
+>   👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)**
+> - **Documentación Swagger / OpenAPI:**  
+>   👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)**
+> - **Token de acceso para evaluación docente (`TOKEN_ACCESO`):** `uai-2026`
+> - ⚠️ **Nota importante sobre disponibilidad y consumo:** Por control de costos y consumo de recursos en la suscripción de Azure (y consumo de cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de revisión**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.
 
 ---
 
@@ -10,8 +18,8 @@ Implementación local reproducible de un sistema multi-agente comunicado mediant
 
 - **Gloria** — Diseño e implementación del `Agente pastelero`, integración del servicio FastAPI protegido con control de acceso por token, canal web de chat y documentación de evidencias.
 - **Patricio** — Diseño e implementación del `Agente de música ochentera`, reglas de validación de dominio y pruebas de comunicación A2A.
-- **Cristian** — Diseño e implementación del `Agente Innovacion`, herramientas de metodologías/experimentación y validación de respuestas.
-- **Cristobal** — Diseño del `Coordinador` multi-agente en LangGraph, descubrimiento de catálogo A2A y pruebas de fidelidad de conclusiones.
+- **Cristobal** — Diseño e implementación del `Agente Innovacion`, herramientas de metodologías/experimentación y validación de respuestas.
+- **Cristian** — Diseño del `Coordinador` multi-agente en LangGraph, descubrimiento de catálogo A2A y pruebas de fidelidad de conclusiones.
 
 ---
 
@@ -84,8 +92,9 @@ Edita `.env` y coloca tu clave real en `GOOGLE_API_KEY` y el token que desees us
 
 ```env
 GOOGLE_API_KEY=tu_clave_gemini_real
+VITE_ELEVENLABS_API_KEY=tu_clave_elevenlabs_opcional
 MODELO=gemini-2.5-flash
-TOKEN_ACCESO=token-secreto-ejemplo-123
+TOKEN_ACCESO=uai-2026
 HOST_WEB=127.0.0.1
 PUERTO_WEB=8000
 URL_COORDINADOR=http://127.0.0.1:8007
@@ -157,7 +166,7 @@ Este script ejecuta los 5 casos de prueba contra `http://127.0.0.1:8000/api/cons
   ```
 - **Uso autorizado (con token válido):**
   ```bash
-  curl -i -X POST http://127.0.0.1:8000/api/consultar -H "Content-Type: application/json" -H "Authorization: Bearer token-secreto-ejemplo-123" -d "{\"mensaje\": \"receta de brownie para 16 porciones\"}"
+  curl -i -X POST http://127.0.0.1:8000/api/consultar -H "Content-Type: application/json" -H "Authorization: Bearer uai-2026" -d "{\"mensaje\": \"receta de brownie para 16 porciones\"}"
   ```
 
 #### 4. Prueba por terminal sin servidor (Contrato Curso 1 / `AGENTS.md`)
@@ -214,10 +223,12 @@ El proyecto está preparado para desplegarse en la nube en **Microsoft Azure** (
    ```bash
    az webapp config set --resource-group rg-agentes-a2a --name app-agentes-a2a-uai --startup-file "python scripts/iniciar_nube.py"
    ```
-5. **Verificación del despliegue remoto:**
-   - Salud del servicio: `https://app-agentes-a2a-uai.azurewebsites.net/salud`
-   - Canal Web protegido: `https://app-agentes-a2a-uai.azurewebsites.net/`
-   - Documentación OpenAPI / Swagger protegida: `https://app-agentes-a2a-uai.azurewebsites.net/docs`
+5. **Verificación del despliegue remoto en Azure:**
+   - **URL desplegada:** `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/`
+   - **Salud del servicio:** `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud`
+   - **Documentación OpenAPI / Swagger protegida:** `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs`
+   - **Token de acceso configurado para los profesores (`TOKEN_ACCESO`):** `uai-2026`
+   - ⚠️ **Aviso de encendido bajo demanda:** Para evitar cargos y consumo innecesario mientras no se está evaluando, la Web App en Azure se mantiene **apagada (Stop)**. Por favor, **avisar al equipo para encenderla desde Azure** antes de realizar la prueba remota.
 
 ### C. Datos que deben conservarse y servicios externos requeridos
 - **Datos a conservar:** La memoria conversacional por `context_id` utiliza `MemorySaver` en memoria RAM y `InMemoryTaskStore` para las tareas A2A durante la vida de la instancia. Para persistencia entre reinicios o múltiples réplicas en Azure se puede conectar un checkpointer sobre *Azure Database for PostgreSQL* o *Azure Cache for Redis*.
