@@ -6,8 +6,14 @@ import hmac
 import logging
 import os
 import re
+import sys
 import uuid
 from datetime import datetime
+from pathlib import Path
+
+_RAIZ_PROYECTO = Path(__file__).resolve().parent.parent
+if str(_RAIZ_PROYECTO) not in sys.path:
+    sys.path.insert(0, str(_RAIZ_PROYECTO))
 
 import httpx
 from dotenv import load_dotenv

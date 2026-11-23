@@ -14,6 +14,8 @@ import time
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
+if str(RAIZ) not in sys.path:
+    sys.path.insert(0, str(RAIZ))
 
 SERVICIOS_INTERNOS = [
     ("Agente Pastelero", "src.agente_pastelero.server:app", "8002"),
@@ -36,9 +38,13 @@ def main() -> int:
         print(
             f"[AZURE] Iniciando Servicio FastAPI + Agentes A2A en modo nube ({host_principal}:{puerto_principal})..."
         )
+        os.chdir(str(RAIZ))
+        if str(RAIZ) not in sys.path:
+            sys.path.insert(0, str(RAIZ))
         import uvicorn
+        from scripts.web import app as app_fastapi
 
-        uvicorn.run("scripts.web:app", host=host_principal, port=int(puerto_principal))
+        uvicorn.run(app_fastapi, host=host_principal, port=int(puerto_principal))
         return 0
 
     try:
