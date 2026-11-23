@@ -317,14 +317,16 @@ async def agente_remoto(state: Estado) -> dict:
         agente_nombre = item["nombre"]
         subconsulta = item.get("consulta") or _texto_usuario(state)
         cliente = None
+        responder_local = None
         url_agente = ""
         for a in catalogo.CATALOGO:
             if a["nombre"] == agente_nombre:
-                cliente = a["cliente"]
+                cliente = a.get("cliente")
+                responder_local = a.get("responder_local")
                 url_agente = a.get("url", "")
                 break
 
-        if cliente is None:
+        if cliente is None and responder_local is None:
             aportes.append(
                 {
                     "agente": agente_nombre,
@@ -338,7 +340,15 @@ async def agente_remoto(state: Estado) -> dict:
             f"[A2A] Enviando solicitud a '{agente_nombre}' ({url_agente}) | context_id={context_id} | consulta='{subconsulta}'"
         )
         try:
-            respuesta = await preguntar(cliente, subconsulta, context_id)
+            if cliente is not None:
+                respuesta = await preguntar(cliente, subconsulta, context_id)
+            else:
+                import asyncio as _asyncio
+
+                res_local = responder_local(subconsulta, context_id)
+                if _asyncio.iscoroutine(res_local):
+                    res_local = await res_local
+                respuesta = str(res_local)
             resumen_log = respuesta.replace(chr(10), " ").strip()[:100]
             print(f"[A2A] Respuesta recibida de '{agente_nombre}': {resumen_log}...")
             aportes.append(

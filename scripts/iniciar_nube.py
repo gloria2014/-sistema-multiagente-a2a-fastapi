@@ -27,6 +27,20 @@ def main() -> int:
     procesos: list[subprocess.Popen] = []
     ejecutable = sys.executable
 
+    puerto_principal = os.getenv("PORT") or os.getenv("WEBSITES_PORT") or os.getenv("PUERTO_WEB") or "8000"
+    host_principal = os.getenv("HOST_WEB", "0.0.0.0")
+
+    # Si estamos corriendo en Azure App Service (WEBSITE_SITE_NAME está definido),
+    # arrancamos en un único proceso liviano para evitar agotar RAM/CPU del plan de Azure (503).
+    if os.getenv("WEBSITE_SITE_NAME"):
+        print(
+            f"[AZURE] Iniciando Servicio FastAPI + Agentes A2A en modo nube ({host_principal}:{puerto_principal})..."
+        )
+        import uvicorn
+
+        uvicorn.run("scripts.web:app", host=host_principal, port=int(puerto_principal))
+        return 0
+
     try:
         for nombre, modulo, puerto in SERVICIOS_INTERNOS:
             print(f"[ARRANQUE] Iniciando {nombre} en 127.0.0.1:{puerto}...")
