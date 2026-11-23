@@ -11,7 +11,9 @@ Esta guía rápida permite instalar, levantar todo el ecosistema multi-agente A2
 > - 🌐 **Navegador requerido para Azure (Microsoft Edge):** Se recomienda **abrir la aplicación de Azure desde el navegador Microsoft Edge**, ya que Google Chrome bloquea preventivamente con pantalla roja el subdominio regional gratuito compartido `*.westus3-01.azurewebsites.net` de Microsoft Azure (si usa Chrome, debe hacer clic en **"Detalles" -> "Acceder a este sitio no seguro"**).
 > - ⚠️ **Nota importante (Consumo):** La aplicación en Azure se mantiene **apagada por temas de consumo**. Por favor **avisar a los integrantes del grupo para encender la API en Azure** al momento de revisarla.
 
-> 📸 **Dónde están las evidencias visuales:** Las 5 capturas de pantalla de nuestra ejecución están en la carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y explicadas con sus tablas en la sección 8 del [`README.md`](README.md).
+> 📸 **Dónde están las evidencias visuales (Locales y en la Nube):**  
+> - **Evidencias Locales (Casos 1 a 5):** En la carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y explicadas con sus tablas en la **Sección 8** del [`README.md`](README.md).  
+> - **Evidencias en la Nube — Microsoft Azure en Microsoft Edge (Casos 6 a 11):** En la carpeta **[`evidencias/`](evidencias/)** (`06_nube_acceso_rechazado.png` a `11_nube_api_fastapi_swagger.png`) y explicadas con sus tablas en la **Sección 9** del [`README.md`](README.md).
 
 ---
 

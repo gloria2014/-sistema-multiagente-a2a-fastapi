@@ -14,12 +14,13 @@ Implementación local reproducible y desplegada en la nube de un sistema multi-a
 | **4. Servicio FastAPI en Azure (Swagger `/docs`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)** *(Abrir en **Microsoft Edge**)* |
 | **5. Endpoint de Salud en Azure (`/salud`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud)** *(Abrir en **Microsoft Edge**)* |
 | **6. Token de Acceso (`TOKEN_ACCESO`)** | `uai-2026` |
-| **7. Guía Paso a Paso (Ejecución en 1 terminal)** | 📄 **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** |
-| **8. Capturas y Evidencias Locales** | 📁 Carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y Sección 8 de este README |
+| **7. Guía Paso a Paso (Ejecución en 1 terminal y Azure)** | 📄 **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** |
+| **8. Capturas y Evidencias Locales (Casos 1 a 5)** | 📁 Carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y **Sección 8** de este README |
+| **9. Capturas y Evidencias en la Nube — Microsoft Azure (Casos 6 a 11)** | 📁 Carpeta **[`evidencias/`](evidencias/)** (`06_nube_acceso_rechazado.png` a `11_nube_api_fastapi_swagger.png`) y **Sección 9** de este README |
 
-> ⚠️ **Notas importantes para los Profesores sobre el despliegue en Microsoft Azure:**  
-> 1. **Abrir desde el navegador Microsoft Edge:** Se recomienda **abrir la URL de Azure desde el navegador Microsoft Edge**. Debido a que la aplicación utiliza el subdominio regional gratuito compartido de Microsoft Azure (`*.westus3-01.azurewebsites.net`) y solicita un token de acceso, el filtro *Safe Browsing* de Google Chrome marca preventivamente todo el subdominio regional `westus3-01.azurewebsites.net` con una pantalla roja. En **Microsoft Edge** abre directamente sin advertencias (o si se usa Chrome, se debe hacer clic en **"Detalles" -> "Acceder a este sitio no seguro"**).  
-> 2. **Encendido bajo demanda por control de consumo:** La aplicación fue desplegada en **Azure App Service** mediante CI/CD desde este repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.
+> 🌐 **REQUISITO IMPORTANTE PARA EVALUACIÓN EN LA NUBE — ABRIR EN NAVEGADOR MICROSOFT EDGE:**  
+> 1. **Usar el navegador Microsoft Edge:** Para abrir cualquiera de los enlaces desplegados en Microsoft Azure (`https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/`), **se debe utilizar explícitamente el navegador Microsoft Edge**. Debido a que la aplicación utiliza el subdominio regional gratuito compartido de Microsoft Azure (`*.westus3-01.azurewebsites.net`) y solicita un código/token de taller, el filtro heurístico *Safe Browsing* de Google Chrome marca preventivamente todo el subdominio regional `westus3-01.azurewebsites.net` con una alerta roja. En **Microsoft Edge** la aplicación abre de forma directa y limpia sin advertencias (tal como se verifica en las capturas de la Sección 9).  
+> 2. **Encendido bajo demanda por control de consumo (y respaldo completo en Sección 9):** La aplicación fue desplegada en **Azure App Service** mediante CI/CD desde este repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato. Asimismo, en la **Sección 9 de este README** hemos dejado registradas todas las evidencias completas de funcionamiento en la nube (`06_nube_*` a `11_nube_*`).
 
 ---
 
@@ -330,3 +331,95 @@ A continuación se documentan los casos probados en entorno **LOCAL** con la est
 | **Observaciones** | Cumple con el requisito de pedir datos faltantes antes de calcular y mostrar mensajes claros ante límites del agente. |
 
 ![Evidencia 5 - Datos faltantes y límites](evidencias/05_datos_faltantes_y_limites.png)
+
+---
+
+## 9. Registro de evidencias de ejecución en la nube (Microsoft Azure)
+
+A continuación se documentan las pruebas ejecutadas directamente contra el sistema desplegado en internet en **Microsoft Azure App Service** (`https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/`), utilizando el navegador **Microsoft Edge**. Estas evidencias respaldan la ejecución completa en la nube en caso de que el servicio en Azure se encuentre detenido por control de costos al momento de la revisión.
+
+> 🌐 **Nota:** Como se observa en la barra de direcciones de todas las capturas siguientes, las pruebas en la nube deben abrirse desde el navegador **Microsoft Edge**.
+
+---
+
+### Caso 6 (Nube): Control de acceso en Azure — Intento rechazado (Sin token / HTTP 401)
+
+| Dato | Qué se registra |
+| :--- | :--- |
+| **Entorno y fecha** | `NUBE (Microsoft Azure App Service)` — 2026-11-23 |
+| **Solicitud** | Acceso a `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/` en **Microsoft Edge** y clic en **"Conectar catálogo"** sin ingresar el código/token de acceso. |
+| **Resultado esperado** | El servidor FastAPI en Azure rechaza la petición con `HTTP 401 Unauthorized` e impide listar el catálogo A2A o consultar a los agentes. |
+| **Resultado obtenido** | La interfaz en Azure muestra la etiqueta roja **`Acceso rechazado (401)`**, el panel lateral informa *"Acceso rechazado: falta el token de autorización (use Authorization: Bearer o X-API-Key)"* y el bloque central indica *"Seguridad FastAPI: Intento de acceso rechazado por el servidor (HTTP 401). Verifica tu TOKEN_ACCESO"*. |
+| **Observaciones** | Verificado directamente sobre el dominio público HTTPS de Microsoft Azure en Microsoft Edge. |
+
+![Evidencia 6 Nube - Acceso rechazado en Azure](evidencias/06_nube_acceso_rechazado.png)
+
+---
+
+### Caso 7 (Nube): Control de acceso en Azure — Uso autorizado y descubrimiento del catálogo A2A
+
+| Dato | Qué se registra |
+| :--- | :--- |
+| **Entorno y fecha** | `NUBE (Microsoft Azure App Service)` — 2026-11-23 |
+| **Solicitud** | Ingreso del código/token válido `uai-2026` en `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/` y clic en **"Conectar catálogo"** (`GET /agentes`). |
+| **Resultado esperado** | El servidor en Azure valida el token con `HTTP 200 OK`, cambia el estado a autorizado y carga las fichas (*Agent Cards*) de los 3 agentes especialistas A2A. |
+| **Resultado obtenido** | La interfaz muestra en verde **`Acceso autorizado (200)`**, el mensaje *"Control de acceso OK: Acceso autorizado correctamente. Catálogo A2A cargado."* y despliega en la columna izquierda a **`Agente pastelero`**, **`Agente de música ochentera`** y **`Agente Innovacion`**. |
+| **Observaciones** | Confirma el funcionamiento del control de acceso y descubrimiento de tarjetas A2A en el contenedor desplegado en Azure. |
+
+![Evidencia 7 Nube - Acceso autorizado en Azure](evidencias/07_nube_acceso_autorizado.png)
+
+---
+
+### Caso 8 (Nube): Consulta A2A en Azure con resiliencia de modelos (Reintentos + Fallback ante error 503)
+
+| Dato | Qué se registra |
+| :--- | :--- |
+| **Entorno y fecha** | `NUBE (Microsoft Azure App Service)` — 2026-11-23 |
+| **Solicitud** | `"Hola, quiero que me des una receta de naranja"` enviada desde el canal web desplegado en Azure. |
+| **Resultado esperado** | El Coordinador enruta la consulta por protocolo A2A al **`Agente pastelero`**, el cual utiliza su mecanismo resiliente de modelos Gemini (`timeout=60`, reintentos y rotación automática a modelo de respaldo ante alta demanda `503`), consulta su catálogo verificado e informa con fidelidad que no tiene una receta exclusivamente de naranja pero ofrece la alternativa cítrica verificada (*Pie de Limón*) con todos sus gramos, mililitros, tiempos y temperatura (`175 °C`). |
+| **Resultado obtenido** | El sistema responde con `A2A: Agente pastelero`, `Estado: completado` y `Contexto: c2faea97`, entregando la receta verificada del catálogo: base (`200 g de galletas de vainilla molidas y 100 g de mantequilla derretida`), relleno (`400 g de leche condensada, 4 yemas de huevo y 120 ml de jugo de limón fresco`), cobertura (`4 claras de huevo y 160 g de azúcar`) y tiempos (`Preparación: 25 minutos, Horneado: 15 minutos a 175 °C, Enfriado: 2 horas`). |
+| **Observaciones** | Confirma la comunicación A2A en la nube y la efectividad del respaldo automático (`src/comun/llm.py`) frente a picos de demanda `503 UNAVAILABLE` de la API de Gemini. |
+
+![Evidencia 8 Nube - Respuesta A2A en Canal Web Azure](evidencias/08_nube_colaboracion_a2a_web.png)
+
+---
+
+### Caso 9 (Nube): Evidencia de Despliegue Continuo CI/CD (GitHub Actions -> Azure Web App)
+
+| Dato | Qué se registra |
+| :--- | :--- |
+| **Entorno y fecha** | `NUBE (GitHub Actions CI/CD -> Azure App Service)` — 2026-11-23 |
+| **Solicitud** | Ejecución del pipeline automatizado `Build and deploy Python app to Azure Web App - sistema-multiagente-a2a-uai` al hacer push a la rama `main`. |
+| **Resultado esperado** | Que GitHub Actions compile el entorno Python 3.12, instale `requirements.txt`, empaquete el artefacto y lo despliegue con éxito en el slot `Production` de Azure Web App. |
+| **Resultado obtenido** | Historial de workflows en `https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions` con estado exitoso en verde (✅), incluyendo el despliegue del commit `91aa4bc` (*"Agrega reintentos y respaldo automatico de modelos Gemini ante errores 503/429"*). |
+| **Observaciones** | Evidencia la trazabilidad completa entre el código del repositorio y la instancia publicada en Microsoft Azure. |
+
+![Evidencia 9 Nube - CI/CD GitHub Actions hacia Azure](evidencias/09_nube_despliegue_cicd_o_logs.png)
+
+---
+
+### Caso 10 (Nube): Solicitud de datos faltantes antes de calcular y límites fuera de alcance en Azure
+
+| Dato | Qué se registra |
+| :--- | :--- |
+| **Entorno y fecha** | `NUBE (Microsoft Azure App Service)` — 2026-11-23 |
+| **Solicitud** | 1) `"escala de receta de brownie por favor"` (sin indicar cantidad de porciones).<br>2) `"Cual es clima de Tokio?"` (consulta fuera del dominio de los agentes). |
+| **Resultado esperado** | 1) El Coordinador en Azure detecta que falta el número de porciones y lo solicita al usuario antes de invocar el cálculo (`Estado: datos_faltantes`).<br>2) Ante la consulta del clima, informa que está fuera de alcance e indica los agentes disponibles (`Estado: fuera_de_alcance`). |
+| **Resultado obtenido** | 1) `A2A: Coordinador | Estado: datos_faltantes | Contexto: c2faea97`: *"[Coordinador - Datos faltantes] Para escalar o calcular la receta con exactitud, necesito un dato faltante: ¿para cuántas porciones o personas deseas preparar el postre?"*<br>2) `A2A: Coordinador | Estado: fuera_de_alcance | Contexto: c2faea97`: *"Fuera de alcance: No tengo un agente especialista para esa consulta. Agentes disponibles: Agente pastelero, Agente de música ochentera, Agente Innovacion."* (incluyendo reproducción de voz activa). |
+| **Observaciones** | Comprueba en la nube tanto la validación de datos faltantes como la respuesta controlada ante límites de dominio y la integración de voz. |
+
+![Evidencia 10 Nube - Datos faltantes y límites en Azure](evidencias/10_nube_datos_faltantes_y_limites.png)
+
+---
+
+### Caso 11 (Nube): Servicio FastAPI Protegido en Azure — Documentación OpenAPI / Swagger (`/docs`)
+
+| Dato | Qué se registra |
+| :--- | :--- |
+| **Entorno y fecha** | `NUBE (Microsoft Azure App Service — FastAPI Swagger UI)` — 2026-11-23 |
+| **Solicitud** | Ejecución directa del endpoint `GET /agentes?actualizar=false` desde la interfaz Swagger en `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs` sin enviar el encabezado `Authorization`. |
+| **Resultado esperado** | Que la API REST en Azure proteja el endpoint a nivel de protocolo HTTP devolviendo código `401 Error: Unauthorized` con cuerpo JSON explicativo. |
+| **Resultado obtenido** | Respuesta del servidor FastAPI en Azure (`server: uvicorn`, `date: Mon, 23 Nov 2026 20:37:46 GMT`) con código `401` y cuerpo JSON: `{"detail": "Acceso rechazado: falta el token de autorización (use Authorization: Bearer <token> o X-API-Key)."}`. |
+| **Observaciones** | Demuestra que la seguridad no depende solo del frontend web, sino que está aplicada directamente en los endpoints REST del Servicio FastAPI desplegado en Azure. |
+
+![Evidencia 11 Nube - API FastAPI Swagger en Azure](evidencias/11_nube_api_fastapi_swagger.png)
