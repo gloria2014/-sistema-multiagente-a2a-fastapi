@@ -17,8 +17,9 @@ Implementación local reproducible y desplegada en la nube de un sistema multi-a
 | **7. Guía Paso a Paso (Ejecución en 1 terminal)** | 📄 **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** |
 | **8. Capturas y Evidencias Locales** | 📁 Carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y Sección 8 de este README |
 
-> ⚠️ **Nota importante sobre el despliegue en Microsoft Azure (Control de consumo):**  
-> La aplicación fue desplegada y verificada en **Azure App Service** mediante integración continua desde nuestro repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.
+> ⚠️ **Nota importante sobre el despliegue en Microsoft Azure (Control de consumo y navegador):**  
+> 1. **Encendido bajo demanda:** La aplicación fue desplegada en **Azure App Service** mediante CI/CD desde este repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.  
+> 2. **Aviso de subdominio compartido en Chrome:** Al tratarse de un subdominio académico gratuito de Azure (`*.westus3-01.azurewebsites.net`) que incluye un campo para enviar un encabezado de API Key, el filtro heurístico de Google Chrome puede mostrar una advertencia preventiva sobre el subdominio. Si aparece en Chrome, basta con hacer clic en **"Detalles" -> "Acceder a este sitio"** (o abrirlo en Microsoft Edge / consultar directamente `/docs` o `/salud`).
 
 ---
 

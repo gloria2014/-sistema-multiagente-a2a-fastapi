@@ -8,7 +8,8 @@ Esta guía rápida permite instalar, levantar todo el ecosistema multi-agente A2
 > - **URL pública en Microsoft Azure (Canal Web):** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)
 > - **Swagger FastAPI en Azure:** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)
 > - **Token de acceso (`TOKEN_ACCESO`):** `uai-2026`
-> - ⚠️ **Nota importante:** La aplicación en Azure se mantiene **apagada por temas de consumo**. Por favor **avisar a los integrantes del grupo para encender la API en Azure** al momento de revisarla.
+> - ⚠️ **Nota importante (Consumo):** La aplicación en Azure se mantiene **apagada por temas de consumo**. Por favor **avisar a los integrantes del grupo para encender la API en Azure** al momento de revisarla.
+> - ℹ️ **Nota para Google Chrome:** Al ser un subdominio gratuito de Azure (`*.westus3-01.azurewebsites.net`) con validación de API Key, Chrome puede mostrar una alerta preventiva de subdominio compartido; si ocurre, haga clic en **"Detalles" -> "Acceder a este sitio"** (o ábralo desde Microsoft Edge).
 
 > 📸 **Dónde están las evidencias visuales:** Las 5 capturas de pantalla de nuestra ejecución están en la carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y explicadas con sus tablas en la sección 8 del [`README.md`](README.md).
 

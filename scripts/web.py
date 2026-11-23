@@ -395,7 +395,8 @@ HTML_PAGINA = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Canal Web y Servicio FastAPI - Agentes A2A</title>
+<meta name="robots" content="noindex, nofollow">
+<title>Taller Académico A2A - Sistema Multi-Agente</title>
 <style>
   :root {
     --bg: #f8fafc;
@@ -465,6 +466,7 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     border-radius: 6px;
     font-size: 13px;
     width: 210px;
+    -webkit-text-security: disc;
   }
   .btn {
     padding: 7px 12px;
@@ -659,8 +661,8 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     <span class="badge-entorno" id="badge-fecha">LOCAL</span>
   </div>
   <div class="control-acceso">
-    <label for="token">Token de acceso:</label>
-    <input id="token" type="password" placeholder="Ingresa TOKEN_ACCESO..." autocomplete="off" />
+    <label for="token">Header X-API-Key:</label>
+    <input id="token" type="text" placeholder="Ingresa código API..." autocomplete="off" spellcheck="false" data-lpignore="true" />
     <button type="button" class="btn" id="btn-conectar">Verificar acceso</button>
     <button type="button" class="btn btn-secundario" id="btn-nueva">Nueva sesión</button>
     <label class="check-voz" title="Genera y reproduce automáticamente la voz con ElevenLabs al recibir cada respuesta">
