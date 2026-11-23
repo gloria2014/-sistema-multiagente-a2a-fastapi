@@ -9,9 +9,13 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain_core.messages import AIMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.checkpoint.memory import MemorySaver
+
+from src.comun.llm import (
+    crear_modelo_chat,
+    ejecutar_con_respaldo,
+    obtener_lista_modelos,
+)
 
 from .prompts import SYSTEM_PROMPT
 from .tools import (
@@ -25,31 +29,49 @@ from .tools import (
 _RAIZ_PROYECTO = Path(__file__).resolve().parent.parent.parent
 load_dotenv(dotenv_path=_RAIZ_PROYECTO / ".env", override=True)
 
-MODELO = os.getenv("MODELO", "gemini-3.5-flash-lite")
+MODELO = os.getenv("MODELO", "gemini-2.5-flash")
 CLAVE_API = (
     os.getenv("GOOGLE_API_KEY")
     or os.getenv("GEMINI_API_KEY")
     or "pendiente-de-configurar"
 )
 
-modelo = ChatGoogleGenerativeAI(
-    model=MODELO,
-    google_api_key=CLAVE_API,
-    timeout=60,
-)
+_MEMORIA = MemorySaver()
+_HERRAMIENTAS = [
+    consultar_metodologias_innovacion,
+    buscar_tecnicas_ideacion,
+    obtener_marcos_experimentacion,
+    analizar_modelo_negocio,
+    consultar_noticias_tendencias_innovacion,
+]
+_GRAFOS: dict[str, object] = {}
 
-graph = create_agent(
-    model=modelo,
-    tools=[
-        consultar_metodologias_innovacion,
-        buscar_tecnicas_ideacion,
-        obtener_marcos_experimentacion,
-        analizar_modelo_negocio,
-        consultar_noticias_tendencias_innovacion,
-    ],
-    system_prompt=SYSTEM_PROMPT,
-    checkpointer=MemorySaver(),
+
+def _obtener_grafo(nombre_modelo: str):
+    """Obtiene o construye el grafo del agente para un modelo dado, compartiendo la memoria."""
+    if nombre_modelo not in _GRAFOS:
+        llm = crear_modelo_chat(
+            nombre_modelo=nombre_modelo,
+            clave_api=CLAVE_API,
+            timeout=60,
+            max_retries=2,
+        )
+        _GRAFOS[nombre_modelo] = create_agent(
+            model=llm,
+            tools=_HERRAMIENTAS,
+            system_prompt=SYSTEM_PROMPT,
+            checkpointer=_MEMORIA,
+        )
+    return _GRAFOS[nombre_modelo]
+
+
+modelo = crear_modelo_chat(
+    nombre_modelo=MODELO,
+    clave_api=CLAVE_API,
+    timeout=60,
+    max_retries=2,
 )
+graph = _obtener_grafo(MODELO)
 
 
 def _rechazo_deterministico(texto: str) -> str | None:
@@ -130,7 +152,7 @@ def _extraer_ultimo_ai(resultado: dict) -> str:
 
 
 async def responder(texto: str, context_id: str | None = None) -> str:
-    """Manda el texto al grafo y devuelve la última respuesta del agente."""
+    """Manda el texto al grafo y devuelve la última respuesta del agente (con respaldo ante error 503/429)."""
     if not context_id:
         context_id = str(uuid.uuid4())
 
@@ -139,7 +161,19 @@ async def responder(texto: str, context_id: str | None = None) -> str:
         return rechazo
 
     config = {"configurable": {"thread_id": context_id}}
-    resultado = await graph.ainvoke({"messages": [("user", texto)]}, config=config)
+    modelos_disponibles = obtener_lista_modelos(MODELO)
+
+    async def _invocar(nombre_modelo: str):
+        grafo_actual = _obtener_grafo(nombre_modelo)
+        return await grafo_actual.ainvoke(
+            {"messages": [("user", texto)]}, config=config
+        )
+
+    resultado = await ejecutar_con_respaldo(
+        modelos=modelos_disponibles,
+        funcion_por_modelo=_invocar,
+        etiqueta="Agente innovación",
+    )
     return _extraer_ultimo_ai(resultado)
 
 

@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 os.environ.setdefault("TOKEN_ACCESO", "token-prueba-pytest-123")
 
 from scripts.web import app
+from src.comun.llm import ejecutar_con_respaldo, es_error_saturacion_o_temporal
 from src.coordinador.graph import _detectar_datos_faltantes
 
 
@@ -63,3 +64,28 @@ def test_detector_datos_faltantes_escalado() -> None:
 
     sin_aviso = _detectar_datos_faltantes("Escala la receta de brownie para 16 porciones")
     assert sin_aviso is None
+
+
+def test_respaldo_automatico_ante_error_503() -> None:
+    """Si el primer modelo devuelve 503 UNAVAILABLE, cambia automáticamente al modelo de respaldo."""
+    intentos: list[str] = []
+
+    async def simular_llamada(modelo: str) -> str:
+        intentos.append(modelo)
+        if modelo == "gemini-2.5-flash":
+            raise RuntimeError(
+                "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand.', 'status': 'UNAVAILABLE'}}"
+            )
+        return f"Respuesta exitosa con {modelo}"
+
+    assert es_error_saturacion_o_temporal(RuntimeError("503 UNAVAILABLE")) is True
+    resultado = asyncio.run(
+        ejecutar_con_respaldo(
+            modelos=["gemini-2.5-flash", "gemini-2.5-flash-lite"],
+            funcion_por_modelo=simular_llamada,
+            etiqueta="Prueba",
+        )
+    )
+    assert resultado == "Respuesta exitosa con gemini-2.5-flash-lite"
+    assert intentos == ["gemini-2.5-flash", "gemini-2.5-flash-lite"]
+

@@ -9,10 +9,15 @@ from typing import Literal
 
 from dotenv import load_dotenv
 from langchain_core.messages import AIMessage, HumanMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, MessagesState, StateGraph
 from pydantic import BaseModel, Field, create_model
+
+from src.comun.llm import (
+    crear_modelo_chat,
+    ejecutar_con_respaldo,
+    obtener_lista_modelos,
+)
 
 from . import catalogo
 from .cliente import preguntar
@@ -234,16 +239,25 @@ async def supervisor(state: Estado) -> dict:
         f"{bloque_historial}"
     )
 
-    modelo = ChatGoogleGenerativeAI(
-        model=MODELO,
-        google_api_key=CLAVE_API,
-        timeout=60,
-    )
-    estructurado = modelo.with_structured_output(DecisionSupervisor)
+    modelos_disponibles = obtener_lista_modelos(MODELO)
+
+    async def _invocar_decision(nombre_modelo: str):
+        llm = crear_modelo_chat(
+            nombre_modelo=nombre_modelo,
+            clave_api=CLAVE_API,
+            timeout=60,
+            max_retries=2,
+        )
+        estructurado = llm.with_structured_output(DecisionSupervisor)
+        return await estructurado.ainvoke(
+            [("system", prompt_sistema), ("user", texto_usuario)]
+        )
 
     try:
-        decision = await estructurado.ainvoke(
-            [("system", prompt_sistema), ("user", texto_usuario)]
+        decision = await ejecutar_con_respaldo(
+            modelos=modelos_disponibles,
+            funcion_por_modelo=_invocar_decision,
+            etiqueta="Supervisor",
         )
 
         if decision.faltan_datos and decision.pregunta_aclaracion.strip():
@@ -398,19 +412,29 @@ async def agente_remoto(state: Estado) -> dict:
     )
 
     try:
-        modelo = ChatGoogleGenerativeAI(
-            model=MODELO,
-            google_api_key=CLAVE_API,
-            timeout=60,
-        )
-        sintesis = await modelo.ainvoke(
-            [
-                ("system", prompt_integracion),
-                (
-                    "user",
-                    f"Solicitud original: {_texto_usuario(state)}\n\nAportes de los agentes:\n{texto_aportes}",
-                ),
-            ]
+        modelos_disponibles = obtener_lista_modelos(MODELO)
+
+        async def _invocar_sintesis(nombre_modelo: str):
+            llm = crear_modelo_chat(
+                nombre_modelo=nombre_modelo,
+                clave_api=CLAVE_API,
+                timeout=60,
+                max_retries=2,
+            )
+            return await llm.ainvoke(
+                [
+                    ("system", prompt_integracion),
+                    (
+                        "user",
+                        f"Solicitud original: {_texto_usuario(state)}\n\nAportes de los agentes:\n{texto_aportes}",
+                    ),
+                ]
+            )
+
+        sintesis = await ejecutar_con_respaldo(
+            modelos=modelos_disponibles,
+            funcion_por_modelo=_invocar_sintesis,
+            etiqueta="Coordinador-Síntesis",
         )
         contenido_sintesis = _extraer_texto_contenido(getattr(sintesis, "content", ""))
         respuesta_final = (
