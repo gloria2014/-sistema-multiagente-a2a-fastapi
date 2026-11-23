@@ -2,15 +2,23 @@
 
 Implementación local reproducible y desplegada en la nube de un sistema multi-agente comunicado mediante el protocolo **A2A (`a2a-sdk`)**, expuesto a través de un **Servicio FastAPI con acceso protegido**, un **Canal Web de atención con frontend de chat propio** y síntesis de **voz con ElevenLabs**.
 
-> 📌 **Guía rápida para el Equipo Docente (Local):** Para instalar, levantar todo en **una sola terminal** y probar los casos de evaluación paso a paso, consulte **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** o siga la sección 5 de este documento. Las 5 capturas de evidencia se encuentran en la carpeta **[`evidencias/`](evidencias/)**.
+---
 
-> ☁️ **Despliegue en Microsoft Azure (+1 punto adicional):**
-> - **URL pública de la aplicación (Canal Web y FastAPI):**  
->   👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)**
-> - **Documentación Swagger / OpenAPI:**  
->   👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)**
-> - **Token de acceso para evaluación docente (`TOKEN_ACCESO`):** `uai-2026`
-> - ⚠️ **Nota importante sobre disponibilidad y consumo:** Por control de costos y consumo de recursos en la suscripción de Azure (y consumo de cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de revisión**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.
+## 📋 Resumen de Entregables para Evaluación Docente
+
+| Entregable / Recurso | Enlace / Detalle de acceso |
+| :--- | :--- |
+| **1. Repositorio Oficial en GitHub** | 👉 **[https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi](https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi)** |
+| **2. Evidencia de CI/CD (GitHub Actions -> Azure)** | 👉 **[https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions](https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions)** |
+| **3. Aplicación Desplegada en Microsoft Azure (Canal Web)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)** |
+| **4. Servicio FastAPI en Azure (Swagger `/docs`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)** |
+| **5. Endpoint de Salud en Azure (`/salud`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud)** |
+| **6. Token de Acceso (`TOKEN_ACCESO`)** | `uai-2026` |
+| **7. Guía Paso a Paso (Ejecución en 1 terminal)** | 📄 **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** |
+| **8. Capturas y Evidencias Locales** | 📁 Carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y Sección 8 de este README |
+
+> ⚠️ **Nota importante sobre el despliegue en Microsoft Azure (Control de consumo):**  
+> La aplicación fue desplegada y verificada en **Azure App Service** mediante integración continua desde nuestro repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.
 
 ---
 

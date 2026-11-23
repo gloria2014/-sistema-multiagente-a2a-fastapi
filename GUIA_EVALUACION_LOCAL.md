@@ -2,9 +2,11 @@
 
 Esta guía rápida permite instalar, levantar todo el ecosistema multi-agente A2A en **una sola terminal** y comprobar los casos de evaluación en menos de 3 minutos.
 
-> ☁️ **Prueba directa en Microsoft Azure:**
-> - **URL pública:** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)
-> - **Swagger FastAPI:** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)
+> 🔗 **Enlaces Oficiales de la Entrega:**
+> - **Repositorio en GitHub:** [https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi](https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi)
+> - **Historial de Despliegue CI/CD (GitHub Actions -> Azure):** [https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions](https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions)
+> - **URL pública en Microsoft Azure (Canal Web):** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)
+> - **Swagger FastAPI en Azure:** [https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)
 > - **Token de acceso (`TOKEN_ACCESO`):** `uai-2026`
 > - ⚠️ **Nota importante:** La aplicación en Azure se mantiene **apagada por temas de consumo**. Por favor **avisar a los integrantes del grupo para encender la API en Azure** al momento de revisarla.
 
