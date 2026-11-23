@@ -10,16 +10,16 @@ Implementación local reproducible y desplegada en la nube de un sistema multi-a
 | :--- | :--- |
 | **1. Repositorio Oficial en GitHub** | 👉 **[https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi](https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi)** |
 | **2. Evidencia de CI/CD (GitHub Actions -> Azure)** | 👉 **[https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions](https://github.com/gloria2014/-sistema-multiagente-a2a-fastapi/actions)** |
-| **3. Aplicación Desplegada en Microsoft Azure (Canal Web)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)** |
-| **4. Servicio FastAPI en Azure (Swagger `/docs`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)** |
-| **5. Endpoint de Salud en Azure (`/salud`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud)** |
+| **3. Aplicación Desplegada en Microsoft Azure (Canal Web)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/)** *(Abrir en **Microsoft Edge**)* |
+| **4. Servicio FastAPI en Azure (Swagger `/docs`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs)** *(Abrir en **Microsoft Edge**)* |
+| **5. Endpoint de Salud en Azure (`/salud`)** | 👉 **[https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud](https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud)** *(Abrir en **Microsoft Edge**)* |
 | **6. Token de Acceso (`TOKEN_ACCESO`)** | `uai-2026` |
 | **7. Guía Paso a Paso (Ejecución en 1 terminal)** | 📄 **[`GUIA_EVALUACION_LOCAL.md`](GUIA_EVALUACION_LOCAL.md)** |
 | **8. Capturas y Evidencias Locales** | 📁 Carpeta **[`evidencias/`](evidencias/)** (`01_acceso_rechazado.png` a `05_datos_faltantes_y_limites.png`) y Sección 8 de este README |
 
-> ⚠️ **Nota importante sobre el despliegue en Microsoft Azure (Control de consumo y navegador):**  
-> 1. **Encendido bajo demanda:** La aplicación fue desplegada en **Azure App Service** mediante CI/CD desde este repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.  
-> 2. **Aviso de subdominio compartido en Chrome:** Al tratarse de un subdominio académico gratuito de Azure (`*.westus3-01.azurewebsites.net`) que incluye un campo para enviar un encabezado de API Key, el filtro heurístico de Google Chrome puede mostrar una advertencia preventiva sobre el subdominio. Si aparece en Chrome, basta con hacer clic en **"Detalles" -> "Acceder a este sitio"** (o abrirlo en Microsoft Edge / consultar directamente `/docs` o `/salud`).
+> ⚠️ **Notas importantes para los Profesores sobre el despliegue en Microsoft Azure:**  
+> 1. **Abrir desde el navegador Microsoft Edge:** Se recomienda **abrir la URL de Azure desde el navegador Microsoft Edge**. Debido a que la aplicación utiliza el subdominio regional gratuito compartido de Microsoft Azure (`*.westus3-01.azurewebsites.net`) y solicita un token de acceso, el filtro *Safe Browsing* de Google Chrome marca preventivamente todo el subdominio regional `westus3-01.azurewebsites.net` con una pantalla roja. En **Microsoft Edge** abre directamente sin advertencias (o si se usa Chrome, se debe hacer clic en **"Detalles" -> "Acceder a este sitio no seguro"**).  
+> 2. **Encendido bajo demanda por control de consumo:** La aplicación fue desplegada en **Azure App Service** mediante CI/CD desde este repositorio de GitHub. Por control de costos y consumo de créditos de la suscripción de Azure (y cuotas de API), **el servicio en Azure se mantiene apagado (detenido) fuera de las ventanas de evaluación**. Solicitamos a los profesores **avisar al grupo cuando vayan a realizar la prueba en línea para encender la aplicación desde el Portal de Azure** de inmediato.
 
 ---
 
@@ -233,6 +233,7 @@ El proyecto está preparado para desplegarse en la nube en **Microsoft Azure** (
    az webapp config set --resource-group rg-agentes-a2a --name app-agentes-a2a-uai --startup-file "python scripts/iniciar_nube.py"
    ```
 5. **Verificación del despliegue remoto en Azure:**
+   - **Navegador recomendado:** **Microsoft Edge** (para evitar el bloqueo preventivo de Google Chrome sobre el subdominio gratuito compartido `*.westus3-01.azurewebsites.net`).
    - **URL desplegada:** `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/`
    - **Salud del servicio:** `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/salud`
    - **Documentación OpenAPI / Swagger protegida:** `https://sistema-multiagente-a2a-uai-hzffeucaf5ghcxhk.westus3-01.azurewebsites.net/docs`
