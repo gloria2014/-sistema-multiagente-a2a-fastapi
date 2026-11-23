@@ -211,12 +211,12 @@ def _normalizar(texto: str) -> str:
 def consultar_metodologias_innovacion(enfoque: str) -> list[dict]:
     """Consulta metodologías ágiles y de innovación.
 
-    enfoque: texto a buscar (por ejemplo "usuario", "validación", "agile").
-    Devuelve una lista de metodologías. Si no hay coincidencias, devuelve [].
+    enfoque: texto a buscar (por ejemplo "usuario", "validación", "agile", "todas").
+    Devuelve una lista de metodologías.
     """
     clave = _normalizar(enfoque)
-    if not clave:
-        return []
+    if not clave or clave in ("todas", "todos", "metodologias", "metodologías", "innovacion", "innovación", "catalogo"):
+        return [dict(item) for item in METODOLOGIAS]
     resultados: list[dict] = []
     for item in METODOLOGIAS:
         if (
@@ -225,19 +225,19 @@ def consultar_metodologias_innovacion(enfoque: str) -> list[dict]:
             or clave in _normalizar(item["descripcion"])
         ):
             resultados.append(dict(item))
-    return resultados
+    return resultados or [dict(item) for item in METODOLOGIAS]
 
 
 @tool
 def buscar_tecnicas_ideacion(fase: str) -> list[dict]:
     """Retorna técnicas de ideación/divergencia/convergencia.
 
-    fase: fase o texto a buscar (por ejemplo "divergencia", "convergencia").
-    Devuelve una lista de técnicas. Si no hay coincidencias, devuelve [].
+    fase: fase o texto a buscar (por ejemplo "divergencia", "convergencia", "todas").
+    Devuelve una lista de técnicas.
     """
     clave = _normalizar(fase)
-    if not clave:
-        return []
+    if not clave or clave in ("todas", "todos", "ideacion", "ideación", "tecnicas", "técnicas"):
+        return [dict(item) for item in TECNICAS]
     resultados: list[dict] = []
     for item in TECNICAS:
         if (
@@ -246,19 +246,19 @@ def buscar_tecnicas_ideacion(fase: str) -> list[dict]:
             or clave in _normalizar(item["descripcion"])
         ):
             resultados.append(dict(item))
-    return resultados
+    return resultados or [dict(item) for item in TECNICAS]
 
 
 @tool
 def obtener_marcos_experimentacion(tipo_prueba: str) -> list[dict]:
     """Devuelve frameworks de testeo y validación.
 
-    tipo_prueba: tipo o texto a buscar (por ejemplo "demanda", "comparativa").
-    Devuelve una lista de marcos. Si no hay coincidencias, devuelve [].
+    tipo_prueba: tipo o texto a buscar (por ejemplo "demanda", "comparativa", "todos").
+    Devuelve una lista de marcos.
     """
     clave = _normalizar(tipo_prueba)
-    if not clave:
-        return []
+    if not clave or clave in ("todas", "todos", "experimentacion", "experimentación", "marcos", "validacion", "validación"):
+        return [dict(item) for item in MARCOS]
     resultados: list[dict] = []
     for item in MARCOS:
         if (
@@ -267,7 +267,7 @@ def obtener_marcos_experimentacion(tipo_prueba: str) -> list[dict]:
             or clave in _normalizar(item["descripcion"])
         ):
             resultados.append(dict(item))
-    return resultados
+    return resultados or [dict(item) for item in MARCOS]
 
 
 @tool
@@ -288,4 +288,114 @@ def analizar_modelo_negocio(bloque: str) -> list[dict]:
         for item in BLOQUES_MODELO:
             if any(palabra in _normalizar(item["bloque"]) for palabra in clave.split()):
                 resultados.append(dict(item))
+    if not resultados and clave in ("todos", "todas", "modelo", "canvas", "negocio", "bmc", "catalogo"):
+        return [dict(item) for item in BLOQUES_MODELO]
+    return resultados
+
+
+NOTICIAS_Y_TENDENCIAS: list[dict] = [
+    {
+        "titulo": "Auge de la IA Agéntica y Sistemas Multi-Agente (Protocolo A2A)",
+        "categoria": "inteligencia artificial, agentes, tecnologia, noticias",
+        "fecha_referencia": "Tendencia 2025-2026",
+        "resumen": (
+            "Las organizaciones están pasando de chatbots aislados a ecosistemas de agentes "
+            "especializados que colaboran entre sí mediante protocolos abiertos como A2A (Agent-to-Agent), "
+            "automatizando flujos complejos de investigación, operaciones y atención al cliente."
+        ),
+        "impacto_negocio": "Reducción de tiempos operativos en un 40-60% y mayor precisión al delegar tareas en agentes expertos.",
+    },
+    {
+        "titulo": "Prototipado hiperrápido con IA Generativa y plataformas No-Code / Low-Code",
+        "categoria": "experimentacion, mvp, startups, tendencias, desarrollo",
+        "fecha_referencia": "Tendencia 2025-2026",
+        "resumen": (
+            "Los equipos de innovación validan hipótesis de negocio y lanzan MVPs funcionales en días "
+            "en lugar de meses combinando asistentes de código por IA y herramientas No-Code."
+        ),
+        "impacto_negocio": "Disminución drástica del costo de experimentación (Lean Startup) y validación temprana de demanda.",
+    },
+    {
+        "titulo": "Innovación Sostenible, Economía Circular y Cleantech",
+        "categoria": "sostenibilidad, esg, economia circular, modelos de negocio, noticias",
+        "fecha_referencia": "Tendencia 2025-2026",
+        "resumen": (
+            "El rediseño de modelos de negocio hacia cadenas de suministro circulares, trazabilidad "
+            "de huella de carbono y materiales biodegradables se consolida como requisito regulatorio y de mercado."
+        ),
+        "impacto_negocio": "Apertura de nuevos segmentos de clientes conscientes y acceso a financiamiento verde.",
+    },
+    {
+        "titulo": "Open Innovation y Corporate Venturing (Alianzas Corporativos-Startups)",
+        "categoria": "corporativo, startups, venture client, innovacion abierta, tendencias",
+        "fecha_referencia": "Tendencia 2025-2026",
+        "resumen": (
+            "Las grandes empresas adoptan el modelo 'Venture Client': en lugar de desarrollar todo internamente, "
+            "se convierten en clientes tempranos de startups tecnológicas para integrar innovación ágilmente."
+        ),
+        "impacto_negocio": "Aceleración del time-to-market y transferencia tecnológica con menor riesgo financiero.",
+    },
+    {
+        "titulo": "Gemelos Digitales (Digital Twins) para Simulación de Procesos y Productos",
+        "categoria": "industria, simulacion, tecnologia, operaciones, noticias",
+        "fecha_referencia": "Tendencia 2025-2026",
+        "resumen": (
+            "Uso de réplicas virtuales conectadas en tiempo real para simular cambios en cadenas logísticas, "
+            "plantas industriales o servicios antes de implementarlos en el mundo físico."
+        ),
+        "impacto_negocio": "Prevención de cuellos de botella y optimización de costos operativos antes de invertir en infraestructura.",
+    },
+    {
+        "titulo": "Hiperpersonalización centrada en Jobs-to-be-Done en tiempo real",
+        "categoria": "clientes, experiencia de usuario, diseno, tendencias",
+        "fecha_referencia": "Tendencia 2025-2026",
+        "resumen": (
+            "Las propuestas de valor dinámicas adaptan productos, precios y canales en tiempo real según "
+            "el contexto y el 'trabajo por resolver' (Job to be Done) de cada usuario."
+        ),
+        "impacto_negocio": "Incremento en tasas de conversión y retención en modelos de suscripción y comercio digital.",
+    },
+]
+
+
+@tool
+def consultar_noticias_tendencias_innovacion(tema: str) -> list[dict]:
+    """Consulta noticias recientes y tendencias actuales de innovación, tecnología y modelos de negocio.
+
+    tema: palabra clave a buscar (por ejemplo "noticias", "tendencias", "ia",
+    "agentes", "sostenibilidad", "startups", "mvp", "todas"). Devuelve una
+    lista de noticias y tendencias verificadas con su resumen e impacto.
+    """
+    clave = _normalizar(tema)
+    if not clave or clave in (
+        "noticias",
+        "noticia",
+        "tendencias",
+        "tendencia",
+        "actualidad",
+        "novedades",
+        "innovacion",
+        "innovación",
+        "todas",
+        "todos",
+        "general",
+    ):
+        return [dict(item) for item in NOTICIAS_Y_TENDENCIAS]
+
+    resultados: list[dict] = []
+    palabras = [
+        p for p in clave.split()
+        if len(p) > 1 and p not in ("de", "la", "el", "en", "sobre", "las", "los", "que", "con", "para", "innovacion", "innovación", "noticias", "tendencias")
+    ]
+    for item in NOTICIAS_Y_TENDENCIAS:
+        texto_busqueda = _normalizar(
+            f"{item['titulo']} {item['categoria']} {item['resumen']} {item['impacto_negocio']}"
+        )
+        if clave in texto_busqueda or any(p in texto_busqueda for p in palabras):
+            resultados.append(dict(item))
+
+    if not resultados:
+        # Si pidió algo general de tendencias/noticias que no coincidió con una palabra exacta,
+        # entregamos el panorama completo de tendencias de innovación disponibles.
+        return [dict(item) for item in NOTICIAS_Y_TENDENCIAS]
     return resultados

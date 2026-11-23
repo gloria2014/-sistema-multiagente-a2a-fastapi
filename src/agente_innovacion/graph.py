@@ -18,6 +18,7 @@ from .tools import (
     analizar_modelo_negocio,
     buscar_tecnicas_ideacion,
     consultar_metodologias_innovacion,
+    consultar_noticias_tendencias_innovacion,
     obtener_marcos_experimentacion,
 )
 
@@ -44,6 +45,7 @@ graph = create_agent(
         buscar_tecnicas_ideacion,
         obtener_marcos_experimentacion,
         analizar_modelo_negocio,
+        consultar_noticias_tendencias_innovacion,
     ],
     system_prompt=SYSTEM_PROMPT,
     checkpointer=MemorySaver(),

@@ -17,10 +17,17 @@ URL_INNOVACION = os.getenv("URL_INNOVACION", "http://127.0.0.1:8004")
 
 tarjeta = crear_tarjeta(
     "Agente Innovacion",
-    "Agente especializado exclusivamente en metodologías de innovación, "
-    "experimentación y modelos de negocio. Solo entrega información verificada.",
+    "Agente especializado en innovación: noticias y tendencias actuales de innovación, "
+    "metodologías ágiles (Design Thinking, Lean Startup), técnicas de ideación, "
+    "experimentación de MVPs y modelos de negocio (Business Model Canvas).",
     URL_INNOVACION,
     [
+        (
+            "noticias_tendencias_innovacion",
+            "Noticias y tendencias de innovación",
+            "Informa sobre noticias recientes y tendencias actuales en innovación, tecnología, IA agéntica, sostenibilidad y startups.",
+            "cuáles son las noticias y tendencias actuales de innovación",
+        ),
         (
             "metodologias_innovacion",
             "Metodologías de innovación",

@@ -12,7 +12,7 @@ from datetime import datetime
 import httpx
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Security, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 
@@ -40,6 +40,63 @@ esquema_api_key = APIKeyHeader(name="X-API-Key", auto_error=False, description="
 def _obtener_token_esperado() -> str:
     """Obtiene el token configurado en el servidor desde variables de entorno."""
     return (os.getenv("TOKEN_ACCESO") or "").strip()
+
+
+def _obtener_clave_elevenlabs() -> str:
+    """Obtiene la clave de ElevenLabs desde .env (VITE_ELEVENLABS_API_KEY), recargando .env por si cambió."""
+    load_dotenv(override=True)
+    return (
+        os.getenv("VITE_ELEVENLABS_API_KEY")
+        or os.getenv("ELEVENLABS_API_KEY")
+        or ""
+    ).strip()
+
+
+def _limpiar_texto_para_voz(texto: str) -> str:
+    """Limpia símbolos Markdown para que ElevenLabs lea el texto con naturalidad."""
+    limpio = re.sub(r"\[([^\]]+)\]", r"\1: ", texto or "")
+    limpio = re.sub(r"[*_`#>-]+", " ", limpio)
+    limpio = re.sub(r"\s+", " ", limpio).strip()
+    # Limitar a 1800 caracteres para proteger cuota y latencia de ElevenLabs
+    return limpio[:1800]
+
+
+async def sintetizar_voz_elevenlabs(texto: str) -> bytes:
+    """Convierte el texto de respuesta en audio MP3 consultando la API de ElevenLabs."""
+    clave_voz = _obtener_clave_elevenlabs()
+    if not clave_voz:
+        raise ValueError(
+            "VITE_ELEVENLABS_API_KEY no está configurada en el archivo .env del servidor."
+        )
+
+    texto_limpio = _limpiar_texto_para_voz(texto)
+    if not texto_limpio:
+        raise ValueError("El texto para convertir a voz está vacío.")
+
+    voice_id = (os.getenv("ELEVENLABS_VOICE_ID") or "IKne3meq5aSn9XLyUdCD").strip()
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+    encabezados = {
+        "xi-api-key": clave_voz,
+        "Content-Type": "application/json",
+        "Accept": "audio/mpeg",
+    }
+    cuerpo = {
+        "text": texto_limpio,
+        "model_id": "eleven_multilingual_v2",
+        "voice_settings": {
+            "stability": 0.5,
+            "similarity_boost": 0.75,
+        },
+    }
+
+    async with httpx.AsyncClient(timeout=45.0) as cliente:
+        respuesta = await cliente.post(url, headers=encabezados, json=cuerpo)
+        if respuesta.status_code != 200:
+            detalle = respuesta.text.replace(chr(10), " ").strip()[:160]
+            raise RuntimeError(
+                f"ElevenLabs respondió HTTP {respuesta.status_code}: {detalle}"
+            )
+        return respuesta.content
 
 
 def _hora_actual() -> str:
@@ -104,6 +161,10 @@ class PeticionChat(BaseModel):
     )
 
 
+class PeticionVoz(BaseModel):
+    texto: str = Field(..., description="Texto de la respuesta del agente que se convertirá en audio MP3.")
+
+
 class _FiltroRuidoScanner(logging.Filter):
     """Oculta del log de consola el ruido de escáneres locales y cierre de socket en Windows."""
 
@@ -146,6 +207,7 @@ async def salud() -> dict:
         "servicio": "FastAPI + Canal Web A2A",
         "agentes_descubiertos": len(catalogo.CATALOGO),
         "acceso_protegido": bool(_obtener_token_esperado()),
+        "voz_elevenlabs_configurada": bool(_obtener_clave_elevenlabs()),
     }
 
 
@@ -296,6 +358,30 @@ async def api_consultar(
 ) -> dict:
     """Endpoint REST protegido del Servicio FastAPI para clientes externos."""
     return await _procesar_consulta(peticion)
+
+
+@app.post("/api/voz")
+async def api_voz(
+    peticion: PeticionVoz,
+    _acceso: str = Depends(verificar_acceso),
+) -> Response:
+    """Genera el audio MP3 de la respuesta usando ElevenLabs (protegido por TOKEN_ACCESO)."""
+    try:
+        print(
+            f"[{_hora_actual()}] [ELEVENLABS] Generando audio MP3 para respuesta ({len(peticion.texto or '')} caracteres)..."
+        )
+        audio_bytes = await sintetizar_voz_elevenlabs(peticion.texto)
+        print(
+            f"[{_hora_actual()}] [ELEVENLABS] Audio generado correctamente ({len(audio_bytes)} bytes)."
+        )
+        return Response(content=audio_bytes, media_type="audio/mpeg")
+    except Exception as error:  # noqa: BLE001 - Regla 4: error en una sola línea sin stack trace
+        mensaje_err = str(error).replace(chr(10), " ").strip()
+        print(f"[{_hora_actual()}] [ELEVENLABS ERROR] {mensaje_err}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Error al generar audio con ElevenLabs: {mensaje_err}",
+        ) from None
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -492,6 +578,40 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     padding: 2px 6px;
     border-radius: 4px;
   }
+  .barra-audio {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-voz {
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #1e293b;
+    cursor: pointer;
+  }
+  .btn-voz:hover {
+    background: #e2e8f0;
+  }
+  .barra-audio audio {
+    height: 32px;
+    max-width: 280px;
+  }
+  .check-voz {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+  }
   .loading-box {
     display: flex;
     align-items: center;
@@ -543,6 +663,10 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     <input id="token" type="password" placeholder="Ingresa TOKEN_ACCESO..." autocomplete="off" />
     <button type="button" class="btn" id="btn-conectar">Verificar acceso</button>
     <button type="button" class="btn btn-secundario" id="btn-nueva">Nueva sesión</button>
+    <label class="check-voz" title="Genera y reproduce automáticamente la voz con ElevenLabs al recibir cada respuesta">
+      <input type="checkbox" id="auto-voz" checked />
+      🔊 Voz automática (ElevenLabs)
+    </label>
     <span id="estado-acceso" class="estado-acceso">Sin verificar</span>
   </div>
 </header>
@@ -644,7 +768,7 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     }
   }
 
-  function agregarMensaje(texto, clase, metaTexto = '') {
+  function agregarMensaje(texto, clase, metaTexto = '', conAudio = false) {
     const div = document.createElement('div');
     div.className = 'msg ' + clase;
     if (metaTexto) {
@@ -656,6 +780,84 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     const cuerpo = document.createElement('div');
     cuerpo.textContent = texto;
     div.appendChild(cuerpo);
+
+    if (conAudio && texto) {
+      const barraAudio = document.createElement('div');
+      barraAudio.className = 'barra-audio';
+      const btnVoz = document.createElement('button');
+      btnVoz.type = 'button';
+      btnVoz.className = 'btn-voz';
+      btnVoz.textContent = '🔊 Escuchar respuesta (ElevenLabs)';
+      const contenedorPlayer = document.createElement('span');
+
+      function hablarConSintetizadorLocal(textoOriginal) {
+        if (!('speechSynthesis' in window)) {
+          btnVoz.textContent = '⚠️ Navegador sin soporte de voz';
+          btnVoz.disabled = false;
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const textoLimpio = textoOriginal.replace(/\[([^\]]+)\]/g, '$1. ').replace(/[*_`#>-]+/g, ' ');
+        const utter = new SpeechSynthesisUtterance(textoLimpio);
+        utter.lang = 'es-ES';
+        const voces = window.speechSynthesis.getVoices();
+        const vozEs = voces.find(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+        if (vozEs) utter.voice = vozEs;
+        btnVoz.textContent = '⏹️ Detener voz (Respaldo Español)';
+        btnVoz.disabled = false;
+        utter.onend = () => {
+          btnVoz.textContent = '🔊 Escuchar respuesta';
+        };
+        utter.onerror = () => {
+          btnVoz.textContent = '🔊 Escuchar respuesta';
+        };
+        window.speechSynthesis.speak(utter);
+      }
+
+      async function reproducirVoz() {
+        if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+          btnVoz.textContent = '🔊 Escuchar respuesta (ElevenLabs)';
+          return;
+        }
+        btnVoz.disabled = true;
+        btnVoz.textContent = '⏳ Generando voz con ElevenLabs...';
+        try {
+          const rVoz = await fetch('/api/voz', {
+            method: 'POST',
+            headers: obtenerHeaders(),
+            body: JSON.stringify({ texto: texto })
+          });
+          if (!rVoz.ok) {
+            hablarConSintetizadorLocal(texto);
+            return;
+          }
+          const blob = await rVoz.blob();
+          const urlAudio = URL.createObjectURL(blob);
+          contenedorPlayer.innerHTML = '';
+          const audioEl = document.createElement('audio');
+          audioEl.controls = true;
+          audioEl.src = urlAudio;
+          contenedorPlayer.appendChild(audioEl);
+          btnVoz.textContent = '🔊 Volver a generar audio (ElevenLabs)';
+          btnVoz.disabled = false;
+          audioEl.play().catch(() => {});
+        } catch (e) {
+          hablarConSintetizadorLocal(texto);
+        }
+      }
+
+      btnVoz.addEventListener('click', reproducirVoz);
+      barraAudio.appendChild(btnVoz);
+      barraAudio.appendChild(contenedorPlayer);
+      div.appendChild(barraAudio);
+
+      const autoVoz = document.getElementById('auto-voz');
+      if (autoVoz && autoVoz.checked) {
+        reproducirVoz();
+      }
+    }
+
     mensajes.appendChild(div);
     mensajes.scrollTop = mensajes.scrollHeight;
   }
@@ -721,7 +923,7 @@ HTML_PAGINA = r"""<!DOCTYPE html>
       if (estado === 'datos_faltantes' || estado === 'fuera_de_alcance') clase = 'agent warn';
 
       const meta = '<span class="tag-a2a">A2A: ' + agentes + '</span><span>Estado: ' + estado + '</span><span>Contexto: ' + (contextId ? contextId.slice(0, 8) : '-') + '</span>';
-      agregarMensaje(data.respuesta, clase, meta);
+      agregarMensaje(data.respuesta, clase, meta, true);
     } catch (err) {
       quitarLoading();
       agregarMensaje('Error de comunicación con el servidor local.', 'agent error');
