@@ -465,8 +465,7 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 13px;
-    width: 210px;
-    -webkit-text-security: disc;
+    width: 180px;
   }
   .btn {
     padding: 7px 12px;
@@ -661,15 +660,15 @@ HTML_PAGINA = r"""<!DOCTYPE html>
     <span class="badge-entorno" id="badge-fecha">LOCAL</span>
   </div>
   <div class="control-acceso">
-    <label for="token">Header X-API-Key:</label>
-    <input id="token" type="text" placeholder="Ingresa código API..." autocomplete="off" spellcheck="false" data-lpignore="true" />
-    <button type="button" class="btn" id="btn-conectar">Verificar acceso</button>
+    <label for="codigo-taller">Código de taller:</label>
+    <input id="codigo-taller" type="text" placeholder="Ej: uai-2026" autocomplete="off" spellcheck="false" />
+    <button type="button" class="btn" id="btn-conectar">Conectar catálogo</button>
     <button type="button" class="btn btn-secundario" id="btn-nueva">Nueva sesión</button>
     <label class="check-voz" title="Genera y reproduce automáticamente la voz con ElevenLabs al recibir cada respuesta">
       <input type="checkbox" id="auto-voz" checked />
       🔊 Voz automática (ElevenLabs)
     </label>
-    <span id="estado-acceso" class="estado-acceso">Sin verificar</span>
+    <span id="estado-acceso" class="estado-acceso">Sin conectar</span>
   </div>
 </header>
 
@@ -697,7 +696,7 @@ HTML_PAGINA = r"""<!DOCTYPE html>
   const form = document.getElementById('form');
   const input = document.getElementById('input');
   const btnEnviar = document.getElementById('btn-enviar');
-  const tokenInput = document.getElementById('token');
+  const tokenInput = document.getElementById('codigo-taller');
   const estadoAcceso = document.getElementById('estado-acceso');
   const badgeFecha = document.getElementById('badge-fecha');
 
